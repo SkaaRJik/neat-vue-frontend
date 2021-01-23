@@ -1,5 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import AuthModule from "@/store/modules/auth.module.";
+import UiModule from "@/store/modules/ui.module";
 
 Vue.use(Vuex);
 
@@ -7,5 +9,8 @@ export default new Vuex.Store({
   state: {},
   mutations: {},
   actions: {},
-  modules: {}
+  modules: {
+    auth: AuthModule,
+    ui: UiModule
+  }
 });
