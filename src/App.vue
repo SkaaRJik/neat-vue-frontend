@@ -3,6 +3,13 @@
     <navigation></navigation>
 
     <v-main>
+      <canvas
+        id="avatar"
+        width="200"
+        height="200"
+        style="border:1px solid #000000;display: none"
+      >
+      </canvas>
       <router-view></router-view>
     </v-main>
 

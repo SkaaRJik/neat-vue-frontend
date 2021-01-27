@@ -19,15 +19,11 @@
     </v-card-title>
     <v-card-text>
       <v-tabs-items v-model="tab">
-        <v-tab-item value="sign-in"> </v-tab-item>
+        <v-tab-item value="sign-in">
+          <Login></Login>
+        </v-tab-item>
         <v-tab-item value="sign-up">
-          <Registration
-            v-on:onSuccess="
-              () => {
-                this.tab = 'sign-in';
-              }
-            "
-          ></Registration>
+          <Registration v-on:onSuccess="setTab('sign-in')"></Registration>
         </v-tab-item>
       </v-tabs-items>
     </v-card-text>
@@ -36,10 +32,15 @@
 
 <script>
 import Registration from "@/components/authorization/Registration";
+import Login from "@/components/authorization/Login";
 export default {
   name: "AuthorizationForm",
   components: {
+    Login,
     Registration
+  },
+  props: {
+    close: Function
   },
   data() {
     return {
@@ -56,6 +57,9 @@ export default {
   methods: {
     closeDialog() {
       this.$emit("close");
+    },
+    setTab: tabName => () => {
+      this.tab = tabName;
     }
   }
 };

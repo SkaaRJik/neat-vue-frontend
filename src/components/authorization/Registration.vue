@@ -1,19 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>
-      <v-alert
-        :type="alert.type"
-        border="bottom"
-        class="mb-0"
-        dense
-        elevation="2"
-        style="width: 100%"
-        transition="scale-transition"
-        v-model="showAlert"
-      >
-        {{ alert.message }}
-      </v-alert>
-    </v-card-title>
+    <v-card-title> </v-card-title>
     <v-card-text>
       <v-form v-model="valid" ref="form">
         <v-container grid-list-md>
@@ -26,7 +13,7 @@
                 :rules="emailRules"
                 :error="!!emailError"
                 :error-messages="emailError"
-                @input="checkIsEmailExist"
+                @input="onEmailInput"
               >
               </v-text-field>
             </v-flex>
@@ -38,7 +25,7 @@
                 v-model="userDetails.username"
                 :error="!!usernameError"
                 :error-messages="usernameError"
-                @input="checkIsUsernameExist"
+                @input="onUsernameInput"
               >
               </v-text-field>
             </v-flex>
@@ -81,38 +68,33 @@
         </v-container>
       </v-form>
       <small>{{ $t("*_Is_Required") }}</small>
-      <canvas
-        id="avatar"
-        width="200"
-        height="200"
-        style="border:1px solid #000000;"
-      >
-      </canvas>
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn @click="signUp" color="blue darken-1" text :disabled="!valid"
-        >{{ $t("To_Sign_Up") }}
+      <v-btn
+        @click="signUp"
+        color="blue darken-1"
+        text
+        :disabled="!valid || isLoading"
+      >
+        <v-progress-circular
+          color="amber"
+          indeterminate
+          v-show="isLoading"
+        ></v-progress-circular>
+        <span v-show="!isLoading">{{ $t("To_Sign_In") }}</span>
       </v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
-import Ucavatar from "ucavatar";
 import {
+  isEmailExist,
   isEmailValid,
-  isUsernameValid,
-  /*isUsernameExist,*/
-  isEmailExist
+  isUsernameExist,
+  isUsernameValid
 } from "@/services/utils/validators";
-
-function getImage(canvas) {
-  const imageData = canvas.toDataURL();
-  const image = new Image(200, 200);
-  image.src = imageData;
-  return imageData;
-}
 
 export default {
   name: "Registration",
@@ -121,6 +103,7 @@ export default {
   },
   data: () => ({
     valid: false,
+    isLoading: false,
     repeatPassword: "",
     alert: {
       type: "error",
@@ -149,45 +132,66 @@ export default {
   methods: {
     async signUp() {
       this.$refs.form.validate();
-      await this.checkIsEmailExist();
-      await this.checkIsUsernameExist();
-      if (this.valid) {
-        try {
+      this.isLoading = true;
+      try {
+        await this.checkIsEmailExist();
+        await this.checkIsUsernameExist();
+        if (this.valid) {
           const userDetailsCopy = {
-            ...this.userDetails,
-            avatar: getImage(this.canvas)
+            ...this.userDetails
           };
-          await this.$store.dispatch("auth/register", userDetailsCopy);
-          await this.$store.dispatch("ui/auth/SET_USER_DATA", userDetailsCopy);
+          const message = await this.$store.dispatch(
+            "auth/REGISTER",
+            userDetailsCopy
+          );
+          this.$toast.open({
+            message: message,
+            type: "success"
+            // all of other options may go here
+          });
           this.$emit("onSuccess");
-        } catch (e) {
-          console.error("[Registration].signUp() error:", e);
-          this.alert.type = "error";
-          this.alert.message = e.response ? e.response : e.message;
         }
+      } catch (e) {
+        this.$toast.open({
+          message: e,
+          type: "error"
+        });
+      } finally {
+        this.isLoading = false;
       }
     },
-    checkIsEmailExist() {
+    onEmailInput() {
       if (this.emailTimeout) {
         clearTimeout(this.emailTimeout);
       }
       this.emailTimeout = setTimeout(async () => {
-        this.emailError = "";
-        if (isEmailValid(this.userDetails.email)) {
-          const emailExists = await isEmailExist(this.userDetails.email);
-          if (emailExists === true) {
-            this.emailError = this.$t("Email_Already_Taken_Info");
-            this.valid = false;
-          } else {
-            this.valid = this.valid && true;
-          }
-        }
+        await this.checkIsEmailExist();
       }, 500);
     },
+    onUsernameInput() {
+      if (this.usernameTimeout) {
+        clearTimeout(this.usernameTimeout);
+      }
+      this.usernameTimeout = setTimeout(async () => {
+        await this.checkIsUsernameExist();
+      }, 500);
+    },
+    async checkIsEmailExist() {
+      this.emailError = "";
+      if (isEmailValid(this.userDetails.email)) {
+        const emailExists = await isEmailExist(this.userDetails.email);
+        if (emailExists === true) {
+          this.emailError = this.$t("Email_Already_Taken_Info");
+          this.valid = false;
+        } else {
+          this.valid = this.valid && true;
+        }
+      }
+    },
     async checkIsUsernameExist() {
-      this.usernameError = null;
+      this.usernameError = "";
       if (isUsernameValid(this.userDetails.username)) {
-        const usernameExist = await isEmailExist(this.userDetails.username);
+        const usernameExist = await isUsernameExist(this.userDetails.username);
         if (usernameExist === true) {
           this.usernameError = this.$t("Login_Already_Taken_Info");
           this.valid = false;
@@ -197,14 +201,7 @@ export default {
       }
     }
   },
-  computed: {
-    showAlert() {
-      return !!this.alert.message;
-    },
-    canvas() {
-      return document.querySelector("#avatar");
-    }
-  },
+  computed: {},
   created() {
     this.usernameRules = [
       v => !!v || this.$t("Fill_Field", { field: this.$t("Login") }),
@@ -227,11 +224,6 @@ export default {
     this.lastNameRules = [
       v => !!v || this.$t("Fill_Field", { field: this.$t("Last_Name") })
     ];
-  },
-  watch: {
-    "userDetails.username": function(newVal) {
-      Ucavatar.Ucavatar(this.canvas, newVal, 200);
-    }
   }
 };
 </script>

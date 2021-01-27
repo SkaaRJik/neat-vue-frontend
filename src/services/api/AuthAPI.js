@@ -2,14 +2,17 @@ import Vue from "vue";
 
 const controllerPath = "";
 export default {
-  signIn: signInDetails => {
-    return Vue.axios.post(`${controllerPath}/login`, {
-      ...signInDetails
-    });
+  signIn: ({ username, password }) => {
+    return Vue.axios.post(`${controllerPath}/login`, { username, password });
   },
-  signUp: signUpDetails => {
+  signUp: ({ email, username, password, firstName, lastName, avatar }) => {
     return Vue.axios.post(`${controllerPath}/signup`, {
-      ...signUpDetails
+      email,
+      username,
+      password,
+      firstName,
+      lastName,
+      avatar
     });
   },
   checkEmail: email => {

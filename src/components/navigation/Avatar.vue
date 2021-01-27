@@ -1,13 +1,9 @@
 <template>
   <v-menu bottom left v-if="isLoggedIn">
     <template v-slot:activator="{ on }">
-      <v-btn icon v-on="on">
-        <v-avatar
-          class="d-block text-center mx-auto mt-4"
-          color="grey darken-1"
-          size="36"
-        >
-          <span class="white--text headline">{{ shortUsername }}</span>
+      <v-btn icon class="d-block text-center mx-auto mt-4" v-on="on">
+        <v-avatar color="grey darken-1" size="48">
+          <img :src="user.avatar" />
         </v-avatar>
       </v-btn>
     </template>
@@ -16,8 +12,8 @@
       <v-list>
         <v-list-item>
           <v-list-item-avatar>
-            <v-avatar color="red">
-              <span class="white--text headline">{{ shortUsername }}</span>
+            <v-avatar color="grey darken-1">
+              <img :src="user.avatar" />
             </v-avatar>
           </v-list-item-avatar>
 
@@ -54,7 +50,6 @@
       </template>
     </v-list>
   </v-menu>
-
   <v-dialog v-else v-model="dialog" width="500px">
     <template v-slot:activator="{ on }">
       <v-avatar
@@ -66,14 +61,15 @@
         <v-icon dark>mdi-login</v-icon>
       </v-avatar>
     </template>
-    <authorization-form></authorization-form>
+    <authorization-form @close="closeAuthDialog"></authorization-form>
     <!--    <auth @close="closeAuthDialog"></auth>-->
   </v-dialog>
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import AuthorizationForm from "@/components/authorization/AuthorizationForm";
+
 export default {
   name: "Avatar",
   components: {
@@ -81,28 +77,33 @@ export default {
   },
   data: () => ({
     dialog: false,
-    items: [
-      [{ text: "Profile", icon: "mdi-account", action: () => {} }],
-      [{ text: "Logout", icon: "mdi-logout", action: () => {} }]
-    ]
+    src: ""
   }),
   computed: {
     ...mapState({
       user: state => state.auth.user
     }),
     ...mapGetters({
-      isLoggedIn: "auth/isLoggedIn"
-    })
+      isLoggedIn: "auth/isLoggedIn",
+      shortUsername: "auth/shortUsername"
+    }),
+    items() {
+      return [
+        [{ text: "Profile", icon: "mdi-account", action: () => {} }],
+        [{ text: "Logout", icon: "mdi-logout", action: this.logout }]
+      ];
+    }
   },
   methods: {
     logout() {
-      /*this.$store.dispatch("auth/LOGOUT");
-      if (!this.isLoggedIn) {
+      console.log("[Avatar].closeAuthDialog this.user:", this.user);
+      this.$store.dispatch("auth/LOGOUT");
+      if (!this.isLoggedIn && this.$router.currentRoute.path !== "/") {
         this.$router.push("/");
-      }*/
+      }
     },
-    shortUsername() {
-      return this.user.firstName;
+    closeAuthDialog() {
+      this.dialog = false;
     }
   }
 };
