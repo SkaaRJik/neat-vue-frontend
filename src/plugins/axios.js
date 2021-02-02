@@ -59,10 +59,16 @@ _axios.interceptors.response.use(
 
     if (status === 401 && data.message === "Token is expired") {
       if (!isRefreshing) {
+        console.log(
+          "[axios].interceptors.response token expired and want to be refreshed:"
+        );
         isRefreshing = true;
         try {
+          console.log("[axios].before requestQueue:", requestQueue);
           await store.dispatch("auth/REFRESH_TOKEN");
           isRefreshing = false;
+          requestQueue = [];
+          console.log("[axios].after requestQueue:", requestQueue);
         } catch (e) {
           console.error("[axios].interceptors.response :", e);
           isRefreshing = false;
@@ -73,14 +79,21 @@ _axios.interceptors.response.use(
           });
           router.push({ name: "Home" });
         }
-        requestQueue = [];
       }
 
+      console.log(
+        "[axios].manageRequestQueue before requestQueue:",
+        requestQueue
+      );
       const manageRequestQueue = new Promise(resolve => {
         requestQueue.push(() => {
           resolve(axios(config));
         });
       });
+      console.log(
+        "[axios].manageRequestQueue after requestQueue:",
+        requestQueue
+      );
 
       onTokenRefreshed();
 
@@ -92,7 +105,9 @@ _axios.interceptors.response.use(
 );
 
 function onTokenRefreshed() {
+  console.log("[axios].onTokenRefreshed start:");
   requestQueue.map(callback => callback());
+  console.log("[axios].onTokenRefreshed ended:");
 }
 
 Plugin.install = function(Vue) {

@@ -1,14 +1,27 @@
 <template>
   <div>
-    <v-btn @click="newProject" bottom color="primary" fab fixed right small>
-      <v-icon>mdi-plus</v-icon>
-    </v-btn>
     <v-container>
       <v-row lg md xl>
         <v-col sm="12">
           <v-card>
             <v-card-title>
-              {{ $t("Projects") }}
+              <span>{{ $t("Projects") }}</span>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    @click="newProject"
+                    outlined
+                    color="primary"
+                    small
+                    class="ml-2"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ $t("New_Project") }}</span>
+              </v-tooltip>
               <v-spacer></v-spacer>
               <v-text-field
                 :label="$t('Search')"
@@ -49,7 +62,7 @@
               :search="search"
               @click:row="
                 value => {
-                  openProject(value.id);
+                  openProject(value.id, value.status);
                 }
               "
               @page-count="pageCount = $event"
@@ -98,8 +111,15 @@ export default {
       this.projects = projects.data.content;
       this.pageCount = projects.data.totalPages;
     },
-    openProject(id) {
-      this.$router.push({ name: "project-page", params: { id: `${id}` } });
+    openProject(id, status) {
+      if (status === "NEW") {
+        this.$router.push({
+          name: "project-configure",
+          params: { id: `${id}` }
+        });
+      } else {
+        this.$router.push({ name: "project-page", params: { id: `${id}` } });
+      }
     }
   },
   data() {

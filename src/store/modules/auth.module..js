@@ -23,7 +23,7 @@ const AuthModule = {
         const newUserState = { ...state.user, ...payload };
         if (!newUserState.avatar) {
           const canvas = document.querySelector("#avatar");
-          Ucavatar.Ucavatar(canvas, payload.username, 200);
+          Ucavatar.Ucavatar(canvas, newUserState.username, 200);
           newUserState.avatar = canvas.toDataURL();
         }
         const AUTH_TOKEN = newUserState.tokens.accessToken;
@@ -70,12 +70,15 @@ const AuthModule = {
       }
     },
     async REFRESH_TOKEN({ commit, state }) {
+      console.log("[auth.module.].REFRESH_TOKEN START:");
       if (state.user) {
+        console.log("[auth.module.].REFRESH_TOKEN START:");
         try {
           const { data, status } = await AuthAPI.refreshTokens(
             state.user.tokens.refreshToken
           );
           commit("MUTATION_SET_USER", { tokens: data });
+          console.log("[auth.module.].TOKEN REFRESHED:");
           return Promise.resolve({ data, status });
         } catch (e) {
           return Promise.reject(e);

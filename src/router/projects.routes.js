@@ -1,8 +1,8 @@
 import Projects from "@/views/projects/list/Projects";
 import ProjectsAPI from "@/services/api/ProjectsAPI";
-import NewProject from "@/views/projects/NewProject";
 import ProjectPage from "@/views/projects/ProjectPage";
-import ProjectConfigurator from "@/views/projects/ProjectConfigurator";
+import NewProject from "@/views/projects/form/NewProject";
+import NEATConfiguration from "@/views/neat/NEATConfiguration";
 
 const projectRoutes = [
   {
@@ -46,9 +46,9 @@ const projectRoutes = [
     }
   },
   {
-    path: "/project/:id/configure",
+    path: "/project/:id/configuration",
     name: "project-configure",
-    component: ProjectConfigurator,
+    component: NEATConfiguration,
     props: route => ({ projectId: Number(route.params.id) }),
     meta: {
       requiresAuth: true

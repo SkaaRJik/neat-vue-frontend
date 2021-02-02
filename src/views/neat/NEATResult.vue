@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: "ProjectConfigurator"
+  name: "NEATResult"
 };
 </script>
 
