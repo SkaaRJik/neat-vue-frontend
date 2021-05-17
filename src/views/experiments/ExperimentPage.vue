@@ -26,11 +26,6 @@ export default {
     async loadExperimentInfo() {
       this.loading = true;
 
-      console.log(
-        "[ExperimentPage].loadProjectInfo params:",
-        this.projectId,
-        this.experimentId
-      );
       try {
         const data = await this.$store.dispatch("project/GET_EXPERIMENT", {
           projectId: this.projectId,

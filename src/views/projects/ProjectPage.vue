@@ -94,31 +94,8 @@ export default {
           this.projectId
         );
         this.projectInfo = data;
-        console.log(
-          "[ProjectPage].loadProjectInfo this.projectInfo:",
-          this.projectInfo
-        );
         this.projectStatus = this.projectInfo.status;
         this.experimentId = this.projectInfo?.lastActiveExperiment?.id;
-        console.log(
-          "[ProjectPage].loadProjectInfo this.lastActiveExperiment.experimentId:",
-          this.projectInfo.lastActiveExperiment
-        );
-        console.log(
-          "[ProjectPage].loadProjectInfo this.experimentId:",
-          this.experimentId
-        );
-        if (
-          this.projectStatus === "VERIFICATION_SERVICE_ERROR" ||
-          this.projectStatus === "SENDING_TO_VERIFICATION_SERVICE_ERROR"
-        ) {
-          await this.$router.push({
-            name: "update-project",
-            params: {
-              projectId: this.projectId
-            }
-          });
-        }
         if (this.projectInfo?.lastActiveExperiment?.id) {
           await this.$router.push({
             name: "experiment-page",
@@ -129,7 +106,7 @@ export default {
           });
         }
       } catch (e) {
-        console.log("[ProjectPageVue].loadProjectInfo e:", e);
+        console.error("[ProjectPageVue].loadProjectInfo e:", e);
       } finally {
         this.loading = false;
       }
