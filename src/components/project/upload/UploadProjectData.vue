@@ -28,7 +28,7 @@
           counter
           outlined
           prepend-icon="mdi-paperclip"
-          @change="parseXLSX"
+          @change="setFile"
         >
           <template v-slot:selection="{ index, text }">
             <v-chip color="deep-purple accent-4" label small>
@@ -38,50 +38,22 @@
         </v-file-input>
       </v-col>
     </v-row>
-    <v-row>
-      <uploaded-excel-info
-        :parsed-data="parsedData"
-        v-if="!!parsedData"
-      ></uploaded-excel-info>
-    </v-row>
   </v-container>
 </template>
 
 <script>
-import parseExcel from "@/services/parser/ExcelParser";
-import UploadedExcelInfo from "@/components/project/upload/UploadedExcelInfo";
-
 export default {
   name: "UploadProjectData",
-  components: { UploadedExcelInfo },
   props: ["value"],
   data: () => {
     return {
-      file: null,
-      parsedData: null
+      file: null
     };
   },
   methods: {
-    async parseXLSX(file) {
-      if (file) {
-        this.excelUploading = true;
-        try {
-          this.parsedData = await parseExcel(file);
-        } catch (e) {
-          console.error("[NewProject].uploadXLSX() EXCEPTION:", e);
-          await this.$toast.open({
-            message: `${this.$t(e)}`,
-            type: "error",
-            position: "top-right",
-            dismissible: true
-          });
-        } finally {
-          this.excelUploading = false;
-        }
-      } else {
-        this.parsedData = null;
-      }
-      this.$emit("input", this.parsedData);
+    async setFile(file) {
+      this.file = file;
+      this.$emit("input", this.file);
     }
   }
 };

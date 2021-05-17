@@ -38,7 +38,7 @@ const AuthModule = {
   actions: {
     LOGOUT({ commit }) {
       console.log("[auth.module.].LOGOUT logout:");
-      commit("MUTATION_SET_USER", undefined);
+      commit("MUTATION_SET_USER", null);
     },
     async REGISTER(
       state,

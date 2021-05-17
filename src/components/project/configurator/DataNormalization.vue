@@ -89,7 +89,11 @@ export default {
   props: {
     parsedData: Object,
     normalizationServiceData: Object,
-    value: Array
+    value: {
+      columnsData: Array,
+      inputs: Number,
+      outputs: Number
+    }
   },
   data() {
     return {
@@ -129,7 +133,9 @@ export default {
           this.normalizationServiceData[key] =
             data.normalizationServiceData[key];
         });
-        this.$emit("input", data.columns);
+
+        this.value.columnsData = data.columns;
+        this.$emit("input", this.value);
         const chartLabels = [];
 
         const chartXInterval = (this.maxRange - this.minRange) / 10;

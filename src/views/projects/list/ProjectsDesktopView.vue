@@ -62,7 +62,7 @@
               :search="search"
               @click:row="
                 value => {
-                  openProject(value.id, value.status);
+                  openProject(value.id);
                 }
               "
               @page-count="pageCount = $event"
@@ -111,15 +111,8 @@ export default {
       this.projects = projects.data.content;
       this.pageCount = projects.data.totalPages;
     },
-    openProject(id, status) {
-      if (status === "NEW") {
-        this.$router.push({
-          name: "project-configure",
-          params: { id: `${id}` }
-        });
-      } else {
-        this.$router.push({ name: "project-page", params: { id: `${id}` } });
-      }
+    openProject(id) {
+      this.$router.push({ name: "project-page", params: { id: `${id}` } });
     }
   },
   data() {

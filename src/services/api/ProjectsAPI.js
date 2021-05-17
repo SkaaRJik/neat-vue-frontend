@@ -11,19 +11,32 @@ export default {
     });
   },
 
-  parseExcelFile: file => {
+  saveProject: ({ projectName, file }) => {
     const formData = new FormData();
-    formData.append("file", file, file.name);
+    formData.append("projectName", projectName);
+    formData.append("file", file);
 
-    return Vue.axios.post(`${controllerPath}/parse`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    });
+    const headers = {
+      "Content-Type": "multipart/form-data"
+    };
+
+    return Vue.axios.post(`${controllerPath}`, formData, headers);
   },
 
-  saveProject: projectDetails => {
-    return Vue.axios.post(`${controllerPath}`, projectDetails);
+  attachSourceFile: ({ projectId, file }) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return Vue.axios.post(`${controllerPath}/${projectId}/attach`, formData);
+  },
+
+  createExperiment: ({ projectId }) => {
+    return Vue.axios.post(`${controllerPath}/${projectId}/experiment`);
+  },
+
+  getExperiment: ({ projectId, experimentId }) => {
+    return Vue.axios.get(
+      `${controllerPath}/${projectId}/experiment/${experimentId}`
+    );
   },
 
   getMyProjects: (page, itemsPerPage) => {
@@ -32,12 +45,8 @@ export default {
     });
   },
 
-  getProjectDetails: id => {
-    return Vue.axios.get(`${controllerPath}/${id}`);
-  },
-
   getProjectData: id => {
-    return Vue.axios.get(`${controllerPath}/${id}/data`);
+    return Vue.axios.get(`${controllerPath}/${id}`);
   },
 
   findProject: params => {

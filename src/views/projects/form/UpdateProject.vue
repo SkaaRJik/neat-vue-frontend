@@ -3,6 +3,7 @@
     <v-row>
       <v-col cols="12">
         <v-text-field
+          disabled
           :label="$t('Project_Name')"
           clearable
           counter="100"
@@ -43,9 +44,12 @@ import ProjectsAPI from "@/services/api/ProjectsAPI";
 import UploadProjectData from "@/components/project/upload/UploadProjectData";
 
 export default {
-  name: "NewProject",
+  name: "UpdateProject",
   components: {
     UploadProjectData
+  },
+  props: {
+    projectId: Number
   },
   data() {
     return {
@@ -55,18 +59,38 @@ export default {
     };
   },
   methods: {
+    async loadProjectData() {
+      this.excelUploading = true;
+      try {
+        const { data } = await ProjectsAPI.getProjectData(this.projectId);
+        console.log("[NewProject].handleSaveProject data:", data);
+        if (data) {
+          this.projectName = data.name;
+        }
+      } catch (e) {
+        console.error("[NewProject].handleSaveProject error:", e);
+        await Vue.$toast.open({
+          message: `${this.$t(e)}`,
+          type: "error",
+          position: "top-right",
+          dismissible: true
+        });
+      } finally {
+        this.excelUploading = false;
+      }
+    },
     async handleSaveProject() {
       this.excelUploading = true;
       try {
-        const { data } = await ProjectsAPI.saveProject({
-          projectName: this.projectName,
+        const { data } = await ProjectsAPI.attachSourceFile({
+          projectId: this.projectId,
           file: this.file
         });
         console.log("[NewProject].handleSaveProject data:", data);
         if (data) {
           this.$router.push({
             name: "project-page",
-            params: { id: data.projectId }
+            params: { id: this.projectId }
           });
         }
       } catch (e) {
@@ -84,6 +108,9 @@ export default {
     redirectToProjectsPage() {
       this.$router.push({ name: "projects" });
     }
+  },
+  mounted() {
+    this.loadProjectData();
   },
   computed: {
     isSaveAllowed() {

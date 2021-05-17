@@ -4,7 +4,7 @@
     <v-card-text>
       <v-container>
         <v-row align="center" justify="space-between">
-          <template v-for="(item, index) in headerTypes">
+          <template v-for="(item, index) in value.columnsData">
             <v-col
               sm="12"
               xs="12"
@@ -13,7 +13,7 @@
               xl="8"
               :key="`header-name-${index}`"
             >
-              {{ item.name }}
+              {{ item.columnName }}
             </v-col>
             <v-col
               sm="12"
@@ -24,7 +24,7 @@
               :key="`header-type-${index}`"
             >
               <v-select
-                :value="item.type"
+                :value="item.columnType"
                 :items="nodeTypes"
                 :label="$t('Type_Node')"
                 @change="handleDataType(item, $event)"
@@ -64,40 +64,34 @@
 export default {
   name: "ColumnsChooser",
   props: {
-    value: Array
+    value: {
+      columnsData: Array,
+      inputs: Number,
+      outputs: Number
+    }
   },
   data: () => {
     return {
       outputsIndex: [],
       inputs: 0,
       outputs: 0,
-      headerTypes: [],
       nodeTypes: ["Input", "Output", "Unused"]
     };
   },
   methods: {
     handleDataType(item, newValue) {
-      if (item.type !== newValue) {
+      if (item.columnType !== newValue) {
         if (newValue === "Input") {
           this.inputs++;
         } else if (newValue === "Output") {
           this.outputs++;
         }
 
-        if (item.type === "Input") {
+        if (item.columnType === "Input") {
           this.inputs--;
-        } else if (item.type === "Output") {
+        } else if (item.columnType === "Output") {
           this.outputs--;
         }
-
-        /*if (this.outputs > 1) {
-          this.$toast.open({
-            message: `${this.$t("ERROR_OUTPUTS_MUST_BE_ONLY_1")}`,
-            type: "error",
-            position: "bottom-right",
-            duration: 3000
-          });
-        }*/
 
         if (this.outputs === 0) {
           this.$toast.open({
@@ -117,32 +111,33 @@ export default {
           });
         }
 
-        item.type = newValue;
+        item.columnType = newValue;
 
+        this.value.inputs = this.inputs;
+        this.value.outputs = this.outputs;
         this.$emit("input", this.value);
       }
     },
     initHeaders(headers) {
       this.inputs = 0;
       this.outputs = 0;
-      this.headerTypes = headers.map((val, index) => {
+      headers.forEach(val => {
         this.inputs += val.columnType === "Input" ? 1 : 0;
         this.outputs += val.columnType === "Output" ? 1 : 0;
-        return {
-          name: val.columnName,
-          type: headers.length - 1 === index ? "Output" : "Input"
-        };
       });
+      this.value.inputs = this.inputs;
+      this.value.outputs = this.outputs;
+      this.$emit("input", this.value);
     }
   },
   mounted() {
-    this.initHeaders(this.value);
+    this.initHeaders(this.value.columnsData);
   },
   watch: {
     value: function(newValue, oldValue) {
       if (newValue) {
         if (newValue !== oldValue) {
-          this.initHeaders(newValue.columns);
+          this.initHeaders(newValue.columnsData);
         }
       }
     }

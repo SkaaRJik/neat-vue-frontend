@@ -3,6 +3,9 @@ import ProjectsAPI from "@/services/api/ProjectsAPI";
 import ProjectPage from "@/views/projects/ProjectPage";
 import NewProject from "@/views/projects/form/NewProject";
 import NEATConfiguration from "@/views/neat/NEATConfiguration";
+import ExperimentPage from "@/views/experiments/ExperimentPage";
+import UpdateProject from "@/views/projects/form/UpdateProject";
+import ExperimentConfig from "@/views/experiments/ExperimentConfig";
 
 const projectRoutes = [
   {
@@ -46,10 +49,46 @@ const projectRoutes = [
     }
   },
   {
+    path: "/project/:projectId/edit",
+    name: "update-project",
+    component: UpdateProject,
+    props: route => ({ projectId: Number(route.params.id) }),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/project/:projectId/experiment/:experimentId",
+    name: "experiment-page",
+    component: ExperimentPage,
+    props: route => ({
+      projectId: Number(route.params.projectId),
+      experimentId: Number(route.params.experimentId)
+    }),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/project/:id/experiment/:experimentId/config",
+    name: "experiment-config",
+    component: ExperimentConfig,
+    props: route => ({
+      projectId: Number(route.params.projectId),
+      experimentId: Number(route.params.experimentId)
+    }),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: "/project/:id/configuration",
     name: "project-configure",
     component: NEATConfiguration,
-    props: route => ({ projectId: Number(route.params.id) }),
+    props: route => ({
+      projectId: Number(route.params.id),
+      step: route.query.step ? Number(route.query.step) : 1
+    }),
     meta: {
       requiresAuth: true
     }
