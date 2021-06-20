@@ -31,7 +31,7 @@
           @change="setFile"
         >
           <template v-slot:selection="{ index, text }">
-            <v-chip color="deep-purple accent-4" label small>
+            <v-chip color="primary" label small>
               {{ text }}
             </v-chip>
           </template>

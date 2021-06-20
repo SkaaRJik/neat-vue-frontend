@@ -39,7 +39,6 @@
 
 <script>
 import Vue from "vue";
-import ProjectsAPI from "@/services/api/ProjectsAPI";
 import UploadProjectData from "@/components/project/upload/UploadProjectData";
 
 export default {
@@ -58,7 +57,7 @@ export default {
     async handleSaveProject() {
       this.excelUploading = true;
       try {
-        const { data } = await ProjectsAPI.saveProject({
+        const data = await this.$store.dispatch("project/CREATE_PROJECT", {
           projectName: this.projectName,
           file: this.file
         });
@@ -66,12 +65,11 @@ export default {
         if (data) {
           this.$router.push({
             name: "project-page",
-            params: { id: data.projectId }
+            params: { projectId: data.id }
           });
         }
       } catch (e) {
-        console.error("[NewProject].handleSaveProject error:", e);
-        await Vue.$toast.open({
+        Vue.$toast.open({
           message: `${this.$t(e)}`,
           type: "error",
           position: "top-right",

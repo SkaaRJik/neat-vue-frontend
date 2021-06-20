@@ -112,7 +112,10 @@ export default {
       this.pageCount = projects.data.totalPages;
     },
     openProject(id) {
-      this.$router.push({ name: "project-page", params: { id: `${id}` } });
+      this.$router.push({
+        name: "project-page",
+        params: { projectId: `${id}` }
+      });
     }
   },
   data() {
@@ -130,7 +133,7 @@ export default {
           sortable: false
         },
         {
-          text: this.$t("Training_Error"),
+          text: this.$t("Train_Error"),
           value: "trainingError",
           sortable: false
         },

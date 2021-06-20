@@ -1,77 +1,78 @@
 <template>
-  <v-card class="ma-6">
-    <v-card-title>{{ $t("Choose_Params") }}</v-card-title>
-    <v-card-text>
-      <v-container>
-        <v-row align="center" justify="space-between">
-          <template v-for="(item, index) in value.columnsData">
-            <v-col
-              sm="12"
-              xs="12"
-              md="8"
-              lg="8"
-              xl="8"
-              :key="`header-name-${index}`"
-            >
-              {{ item.columnName }}
-            </v-col>
-            <v-col
-              sm="12"
-              xs="12"
-              md="4"
-              lg="4"
-              xl="4"
-              :key="`header-type-${index}`"
-            >
-              <v-select
-                :value="item.columnType"
-                :items="nodeTypes"
-                :label="$t('Type_Node')"
-                @change="handleDataType(item, $event)"
-                dense
-                outlined
-                :append-icon="
-                  outputs == 0 || inputs == 0 ? 'mdi-alert' : 'mdi-menu-down'
-                "
-                :error="outputs == 0 || inputs == 0"
-                :error-messages="
-                  outputs == 0
-                    ? $t('ERROR_OUTPUTS_NODE_CANT_BE_0')
-                    : inputs == 0
-                    ? $t('ERROR_INPUTS_NODE_CANT_BE_0')
-                    : ''
-                "
+  <v-expansion-panels v-model="panel" multiple>
+    <v-expansion-panel>
+      <v-expansion-panel-header>
+        {{ $t("Choose_Params") }}
+      </v-expansion-panel-header>
+      <v-expansion-panel-content>
+        <v-container>
+          <v-row align="center" justify="space-between">
+            <template v-for="(item, index) in value">
+              <v-col
+                sm="12"
+                xs="12"
+                md="8"
+                lg="8"
+                xl="8"
+                :key="`header-name-${index}`"
               >
-                <template v-slot:selection="{ item: headerType }">
-                  <span>{{ $t(headerType) }}</span>
-                </template>
-                <template v-slot:item="{ item: headerType }">
-                  <span>{{ $t(headerType) }}</span>
-                </template>
-              </v-select>
-            </v-col>
-            <v-col cols="12" :key="`divider-${index}`">
-              <v-divider></v-divider>
-            </v-col>
-          </template>
-        </v-row>
-      </v-container>
-    </v-card-text>
-  </v-card>
+                {{ item.columnName }}
+              </v-col>
+              <v-col
+                sm="12"
+                xs="12"
+                md="4"
+                lg="4"
+                xl="4"
+                :key="`header-type-${index}`"
+              >
+                <v-select
+                  :value="item.columnType"
+                  :items="nodeTypes"
+                  :label="$t('Type_Node')"
+                  @change="handleDataType(item, index, $event)"
+                  dense
+                  outlined
+                  :append-icon="
+                    outputs == 0 || inputs == 0 ? 'mdi-alert' : 'mdi-menu-down'
+                  "
+                  :error="outputs == 0 || inputs == 0"
+                  :error-messages="
+                    outputs == 0
+                      ? $t('ERROR_OUTPUTS_NODE_CANT_BE_0')
+                      : inputs == 0
+                      ? $t('ERROR_INPUTS_NODE_CANT_BE_0')
+                      : ''
+                  "
+                >
+                  <template v-slot:selection="{ item: headerType }">
+                    <span>{{ $t(headerType) }}</span>
+                  </template>
+                  <template v-slot:item="{ item: headerType }">
+                    <span>{{ $t(headerType) }}</span>
+                  </template>
+                </v-select>
+              </v-col>
+              <v-col cols="12" :key="`divider-${index}`">
+                <v-divider></v-divider>
+              </v-col>
+            </template>
+          </v-row>
+        </v-container>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+  </v-expansion-panels>
 </template>
 
 <script>
 export default {
   name: "ColumnsChooser",
   props: {
-    value: {
-      columnsData: Array,
-      inputs: Number,
-      outputs: Number
-    }
+    value: Array
   },
   data: () => {
     return {
+      panel: [],
       outputsIndex: [],
       inputs: 0,
       outputs: 0,
@@ -79,7 +80,7 @@ export default {
     };
   },
   methods: {
-    handleDataType(item, newValue) {
+    handleDataType(item, index, newValue) {
       if (item.columnType !== newValue) {
         if (newValue === "Input") {
           this.inputs++;
@@ -113,31 +114,26 @@ export default {
 
         item.columnType = newValue;
 
-        this.value.inputs = this.inputs;
-        this.value.outputs = this.outputs;
-        this.$emit("input", this.value);
+        this.$emit("input", [...this.value]);
       }
     },
-    initHeaders(headers) {
+    calculateInputsOutputs(headers) {
       this.inputs = 0;
       this.outputs = 0;
-      headers.forEach(val => {
+      headers?.forEach(val => {
         this.inputs += val.columnType === "Input" ? 1 : 0;
         this.outputs += val.columnType === "Output" ? 1 : 0;
       });
-      this.value.inputs = this.inputs;
-      this.value.outputs = this.outputs;
-      this.$emit("input", this.value);
     }
   },
   mounted() {
-    this.initHeaders(this.value.columnsData);
+    this.calculateInputsOutputs(this.columns);
   },
   watch: {
     value: function(newValue, oldValue) {
       if (newValue) {
         if (newValue !== oldValue) {
-          this.initHeaders(newValue.columnsData);
+          this.calculateInputsOutputs(newValue);
         }
       }
     }

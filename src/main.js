@@ -11,7 +11,6 @@ import "vue-toast-notification/dist/theme-sugar.css";
 Vue.config.productionTip = false;
 
 Vue.use(VueToast);
-
 new Vue({
   router,
   store,

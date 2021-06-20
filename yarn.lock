@@ -1044,6 +1044,11 @@
   resolved "https://registry.npm.taobao.org/@soda/get-current-script/download/@soda/get-current-script-1.0.2.tgz#a53515db25d8038374381b73af20bb4f2e508d87"
   integrity sha1-pTUV2yXYA4N0OBtzryC7Ty5QjYc=
 
+"@stomp/stompjs@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@stomp/stompjs/-/stompjs-6.1.0.tgz#b77ca240775a7a34289b2c09618e256be761d142"
+  integrity sha512-Bt+whL0V51rSKP35OkgM1yeVu/usunpz5l1VYuoWw8mGsDMNd3W3FpWa4/4eis6QfXO3uteNGfyE21XWn0pGAQ==
+
 "@turf/area@^6.0.1":
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/@turf/area/-/area-6.3.0.tgz#cdd02f8ca51da2889dfc90a3c9e8fef5d1e04dca"
@@ -4497,6 +4502,11 @@ event-pubsub@4.3.0:
   resolved "https://registry.npm.taobao.org/event-pubsub/download/event-pubsub-4.3.0.tgz?cache=0&sync_timestamp=1606361626381&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fevent-pubsub%2Fdownload%2Fevent-pubsub-4.3.0.tgz#f68d816bc29f1ec02c539dc58c8dd40ce72cb36e"
   integrity sha1-9o2Ba8KfHsAsU53FjI3UDOcss24=
 
+event-source-polyfill@^1.0.24:
+  version "1.0.24"
+  resolved "https://registry.yarnpkg.com/event-source-polyfill/-/event-source-polyfill-1.0.24.tgz#46045e9af2190fd51234de0075d71c909907f937"
+  integrity sha512-aEtMhrH5ww3X6RgbsNcwu0whw8zjOoeRnwPqRKqKuxWS5KlAZhCY+rTm6wMlHOXbxmLGn8lW6Xox7rfpBExzGA==
+
 eventemitter3@^4.0.0:
   version "4.0.7"
   resolved "https://registry.npm.taobao.org/eventemitter3/download/eventemitter3-4.0.7.tgz?cache=0&sync_timestamp=1598517732045&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Feventemitter3%2Fdownload%2Feventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
@@ -7289,6 +7299,11 @@ mat4-recompose@^1.0.3:
   integrity sha1-OVPCMP8kc9x3LuAUpSySXPgbDk0=
   dependencies:
     gl-mat4 "^1.0.1"
+
+material-design-icons-iconfont@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/material-design-icons-iconfont/-/material-design-icons-iconfont-6.1.0.tgz#ffad21a71f2000336fd410cbeba36ddbf301f0f2"
+  integrity sha512-wRJtOo1v1ch+gN8PRsj0IGJznk+kQ8mz13ds/nuhLI+Qyf/931ZlRpd92oq0IRPpZIb+bhX8pRjzIVdcPDKmiQ==
 
 math-log2@^1.0.1:
   version "1.0.1"
@@ -10117,6 +10132,18 @@ sockjs-client@^1.5.0:
     json3 "^3.3.3"
     url-parse "^1.4.7"
 
+sockjs-client@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/sockjs-client/-/sockjs-client-1.5.1.tgz#256908f6d5adfb94dabbdbd02c66362cca0f9ea6"
+  integrity sha512-VnVAb663fosipI/m6pqRXakEOw7nvd7TUgdr3PlR/8V2I95QIdwT8L4nMxhyU8SmDBHYXU1TOElaKOmKLfYzeQ==
+  dependencies:
+    debug "^3.2.6"
+    eventsource "^1.0.7"
+    faye-websocket "^0.11.3"
+    inherits "^2.0.4"
+    json3 "^3.3.3"
+    url-parse "^1.5.1"
+
 sockjs@^0.3.21:
   version "0.3.21"
   resolved "https://registry.npm.taobao.org/sockjs/download/sockjs-0.3.21.tgz?cache=0&sync_timestamp=1596167687472&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fsockjs%2Fdownload%2Fsockjs-0.3.21.tgz#b34ffb98e796930b60a0cfa11904d6a339a7d417"
@@ -11158,6 +11185,14 @@ url-parse@^1.4.3, url-parse@^1.4.7:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
+url-parse@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.5.1.tgz#d5fa9890af8a5e1f274a2c98376510f6425f6e3b"
+  integrity sha512-HOfCOUJt7iSYzEx/UqgtwKRMC6EU91NFhsCHMv9oM03VJcVo2Qrp8T8kI9D7amFf1cu+/3CEhgb3rF9zL7k85Q==
+  dependencies:
+    querystringify "^2.1.1"
+    requires-port "^1.0.0"
+
 url@^0.11.0:
   version "0.11.0"
   resolved "https://registry.npm.taobao.org/url/download/url-0.11.0.tgz#3838e97cfc60521eb73c525a8e55bfdd9e2e28f1"
@@ -11377,6 +11412,21 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+vis-data@^7.1.2:
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/vis-data/-/vis-data-7.1.2.tgz#b7d076ac79cb54f7c5e9c80f5b03b93cc8cc1fda"
+  integrity sha512-RPSegFxEcnp3HUEJSzhS2vBdbJ2PSsrYYuhRlpHp2frO/MfRtTYbIkkLZmPkA/Sg3pPfBlR235gcoKbtdm4mbw==
+
+vis-network@^9.0.4:
+  version "9.0.4"
+  resolved "https://registry.yarnpkg.com/vis-network/-/vis-network-9.0.4.tgz#c62d466224897070e9c1720e4d8e6e1dc479ca81"
+  integrity sha512-F/pq8yBJUuB9lNKXHhtn4GP2h91FV0c2O2nvfU34RX4VCYOlqs+mINdz+J+QkWiYhiPdlVy15gzVEzkhJ9hpaw==
+
+vis-util@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/vis-util/-/vis-util-5.0.2.tgz#47e8a31580c0805680c43d253ac7da21501990b9"
+  integrity sha512-oPDmPc4o0uQLoKpKai2XD1DjrhYsA7MRz75Wx9KmfX84e9LLgsbno7jVL5tR0K9eNVQkD6jf0Ei8NtbBHDkF1A==
 
 vm-browserify@^1.0.1:
   version "1.1.2"

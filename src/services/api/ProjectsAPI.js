@@ -58,5 +58,77 @@ export default {
 
   saveProjectConfiguration(projectId, config) {
     return Vue.axios.put(`${controllerPath}/${projectId}/config`, config);
+  },
+
+  normalizeData(
+    projectId,
+    experimentId,
+    normalizationMethod,
+    enableLogTransform
+  ) {
+    const body = {
+      normalizationMethod,
+      enableLogTransform
+    };
+    return Vue.axios.post(
+      `${controllerPath}/${projectId}/experiment/${experimentId}/normalize`,
+      body
+    );
+  },
+
+  updateExperiment(projectId, experimentId, name) {
+    const body = {
+      name
+    };
+
+    return Vue.axios.put(
+      `${controllerPath}/${projectId}/experiment/${experimentId}`,
+      body
+    );
+  },
+
+  predict(
+    projectId,
+    experimentId,
+    columns,
+    trainEndIndex,
+    testEndIndex,
+    neatSettings,
+    predictionWindowSize,
+    predictionPeriod
+  ) {
+    const body = {
+      columns,
+      trainEndIndex,
+      testEndIndex,
+      neatSettings,
+      predictionWindowSize,
+      predictionPeriod
+    };
+
+    return Vue.axios.post(
+      `${controllerPath}/${projectId}/experiment/${experimentId}/predict`,
+      body
+    );
+  },
+
+  copyExperiment(project_id, experiment_id, rewrite_experiment_id) {
+    if (rewrite_experiment_id) {
+      return Vue.axios.post(
+        `${controllerPath}/${project_id}/experiment/${experiment_id}/copy/${rewrite_experiment_id}`
+      );
+    } else {
+      return Vue.axios.post(
+        `${controllerPath}/${project_id}/experiment/${experiment_id}/copy`
+      );
+    }
+  },
+
+  downloadReportFile(project_id, experiment_id) {
+    return Vue.axios.post(
+      `${controllerPath}/${project_id}/experiment/${experiment_id}/download_report`,
+      null,
+      { responseType: "blob" }
+    );
   }
 };

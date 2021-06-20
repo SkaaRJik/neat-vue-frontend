@@ -29,9 +29,9 @@ router.beforeEach((to, fromRoute, next) => {
       next(fromRoute);
     } else {
       const user = JSON.parse(localStorage.getItem("user"));
-      const roles = user.roles;
+      const roles = user?.roles;
       if (to.matched.some(record => record.meta.isAdmin)) {
-        if (roles.includes("ROLE_ADMIN")) {
+        if (roles?.includes("ROLE_ADMIN")) {
           next();
         } else {
           Vue.$toast.open({

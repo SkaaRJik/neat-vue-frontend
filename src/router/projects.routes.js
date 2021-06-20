@@ -40,10 +40,10 @@ const projectRoutes = [
     }
   },
   {
-    path: "/project/:id",
+    path: "/project/:projectId",
     name: "project-page",
     component: ProjectPage,
-    props: route => ({ projectId: Number(route.params.id) }),
+    props: route => ({ projectId: Number(route.params.projectId) }),
     meta: {
       requiresAuth: true
     }
@@ -52,7 +52,7 @@ const projectRoutes = [
     path: "/project/:projectId/edit",
     name: "update-project",
     component: UpdateProject,
-    props: route => ({ projectId: Number(route.params.id) }),
+    props: route => ({ projectId: Number(route.params.projectId) }),
     meta: {
       requiresAuth: true
     }
@@ -70,7 +70,7 @@ const projectRoutes = [
     }
   },
   {
-    path: "/project/:id/experiment/:experimentId/config",
+    path: "/project/:projectId/experiment/:experimentId/config",
     name: "experiment-config",
     component: ExperimentConfig,
     props: route => ({

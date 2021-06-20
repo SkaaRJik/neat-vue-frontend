@@ -1,11 +1,10 @@
 <template>
-  <v-card class="ma-6">
-    <v-card-title>
-      <span>{{ $t("AI_Config") }}</span>
-    </v-card-title>
-
-    <v-card-text>
-      <v-container>
+  <v-expansion-panels v-model="panel" multiple>
+    <v-expansion-panel>
+      <v-expansion-panel-header>
+        {{ $t("AI_Config") }}
+      </v-expansion-panel-header>
+      <v-expansion-panel-content>
         <v-row justify="space-between">
           <v-col>
             <v-switch
@@ -120,9 +119,9 @@
             </v-col>
           </template>
         </v-row>
-      </v-container>
-    </v-card-text>
-  </v-card>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+  </v-expansion-panels>
 </template>
 
 <script>
@@ -139,7 +138,8 @@ export default {
       aiConfig: [],
       isAdvanced: false,
       functions: [],
-      defaultConfig: []
+      defaultConfig: [],
+      panel: []
     };
   },
   methods: {
@@ -155,8 +155,8 @@ export default {
     async loadDefaultConfig() {
       this.loading = true;
       try {
-        const res = await AIAPI.getDefaultConfig();
-        this.defaultConfig = res.data;
+        const { data } = await AIAPI.getDefaultConfig();
+        this.defaultConfig = data;
         this.setAiConfigWithDeafultValues();
       } catch (e) {
         console.error("[AiParams.vue].loadDefaultConfig error:", e);
@@ -166,7 +166,7 @@ export default {
     },
 
     setAiConfigWithDeafultValues() {
-      this.aiConfig = this.defaultConfig;
+      this.aiConfig = [...this.defaultConfig];
       this.onSubmit();
     },
 
@@ -214,16 +214,14 @@ export default {
 
     onSubmit(param) {
       if (param) {
-        if (param.maxValue || param.minValue) {
-          if (param.value > param.maxValue) {
-            param.value = param.maxValue;
-          }
-          if (param.value < param.minValue) {
-            param.value = param.minValue;
-          }
+        if (param.value > param.maxValue) {
+          param.value = param.maxValue;
+        }
+        if (param.value < param.minValue) {
+          param.value = param.minValue;
         }
       }
-      this.$emit("input", this.aiConfig);
+      this.$emit("input", [...this.aiConfig]);
     }
   },
   mounted() {

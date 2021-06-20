@@ -1,9 +1,27 @@
 <template>
   <v-container>
     <template v-if="!loading">
-      <v-row justify="center" align="center">
-        <v-col style="text-align: center;">
-          <span>{{ $t(this.projectStatus) }}</span>
+      <v-row align="center" justify="center">
+        <v-col cols="12" align="center">
+          <span>{{ $t("Status") }}: {{ $t(projectInfo.status) }}</span>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="projectStatus === 'VERIFIED'">
+        <v-col cols="12">
+          <v-card>
+            <v-card-title>
+              {{ $t("Identified_signs") }}
+            </v-card-title>
+            <v-card-text>
+              <v-data-table
+                :headers="headers"
+                :items="identifiedSigns"
+                item-key="value"
+              >
+              </v-data-table>
+            </v-card-text>
+          </v-card>
         </v-col>
       </v-row>
       <v-row
@@ -41,13 +59,20 @@
           >
         </v-col>
         <v-col cols="auto" xs="12" v-if="projectStatus === 'VERIFIED'">
-          <v-btn @click="redirectToExperiment">{{ $t("Continue") }}</v-btn>
+          <v-btn color="primary" @click="redirectToExperiment">{{
+            $t("Continue")
+          }}</v-btn>
         </v-col>
       </v-row>
     </template>
     <template v-if="loading">
       <v-row justify="center" align="center">
-        <v-col style="text-align: center;"> </v-col>
+        <v-col style="text-align: center;">
+          <v-skeleton-loader
+            v-bind="!loading"
+            type="card-avatar, article, actions"
+          ></v-skeleton-loader>
+        </v-col>
       </v-row>
     </template>
   </v-container>
@@ -66,9 +91,22 @@ export default {
     return {
       loading: false,
       projectStatus: "",
+      headers: [
+        {
+          text: "№",
+          value: "index",
+          sortable: false
+        },
+        {
+          text: this.$t("Name"),
+          value: "value",
+          sortable: false
+        }
+      ],
       experimentId: null,
       projectInfo: {
         id: null,
+        headers: [],
         verificationErrors: null,
         verificationInfo: null,
         status: "",
@@ -79,13 +117,6 @@ export default {
     };
   },
   methods: {
-    configureProject() {
-      this.$router.push({
-        name: "project-configure",
-        params: { id: this.projectId }
-      });
-    },
-
     async loadProjectInfo() {
       this.loading = true;
       try {
@@ -106,7 +137,12 @@ export default {
           });
         }
       } catch (e) {
-        console.error("[ProjectPageVue].loadProjectInfo e:", e);
+        this.$toast.open({
+          message: this.$t(e),
+          type: "error",
+          position: "top-right",
+          dismissible: true
+        });
       } finally {
         this.loading = false;
       }
@@ -132,7 +168,15 @@ export default {
           });
           this.experimentId = data?.id;
         } catch (e) {
-          console.log("[ProjectPageVue].loadProjectInfo e:", e);
+          console.error("[ProjectPageVue].loadProjectInfo e:", e);
+          this.$toast.open({
+            message: `${(e.response?.data?.message &&
+              this.$t(e.response.data.message)) ||
+              e}`,
+            type: "error",
+            position: "top-right",
+            dismissible: true
+          });
         } finally {
           this.loading = false;
         }
@@ -154,6 +198,21 @@ export default {
   },
   mounted() {
     this.loadProjectInfo();
+  },
+  computed: {
+    identifiedSigns() {
+      const comp =
+        this.projectInfo?.headers?.map((value, index) => {
+          return {
+            index: index + 1,
+            value: value
+          };
+        }) || [];
+
+      console.log("[ProjectPage].identifiedSigns comp:", comp);
+
+      return comp;
+    }
   },
   watch: {
     projectId: function() {

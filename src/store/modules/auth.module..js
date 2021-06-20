@@ -1,10 +1,14 @@
 import AuthAPI from "@/services/api/AuthAPI";
-import Ucavatar from "ucavatar";
 import axios from "axios";
+import { connect } from "@/websocket/ws";
 
 const initialState = {
   user: JSON.parse(localStorage.getItem("user"))
 };
+
+if (initialState.user) {
+  connect(initialState.user.tokens.accessToken);
+}
 
 const AuthModule = {
   namespaced: true,
@@ -21,14 +25,15 @@ const AuthModule = {
     MUTATION_SET_USER(state, payload) {
       if (payload) {
         const newUserState = { ...state.user, ...payload };
-        if (!newUserState.avatar) {
-          const canvas = document.querySelector("#avatar");
-          Ucavatar.Ucavatar(canvas, newUserState.username, 200);
-          newUserState.avatar = canvas.toDataURL();
-        }
+        // if (!newUserState.avatar) {
+        //   const canvas = document.querySelector("#avatar");
+        //   Ucavatar.Ucavatar(canvas, newUserState.username, 200);
+        //   newUserState.avatar = canvas.toDataURL();
+        // }
         const AUTH_TOKEN = newUserState.tokens.accessToken;
         axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
         localStorage.setItem("user", JSON.stringify(newUserState));
+        connect(AUTH_TOKEN);
       } else {
         localStorage.removeItem("user");
       }

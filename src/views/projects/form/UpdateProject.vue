@@ -40,7 +40,6 @@
 
 <script>
 import Vue from "vue";
-import ProjectsAPI from "@/services/api/ProjectsAPI";
 import UploadProjectData from "@/components/project/upload/UploadProjectData";
 
 export default {
@@ -61,15 +60,19 @@ export default {
   methods: {
     async loadProjectData() {
       this.excelUploading = true;
+      console.log("[UpdateProject].loadProjectData :");
       try {
-        const { data } = await ProjectsAPI.getProjectData(this.projectId);
-        console.log("[NewProject].handleSaveProject data:", data);
+        const data = await this.$store.dispatch(
+          "project/GET_PROJECT",
+          this.projectId
+        );
+        console.log("[UpdateProject].loadProjectData data:", data);
         if (data) {
           this.projectName = data.name;
         }
       } catch (e) {
-        console.error("[NewProject].handleSaveProject error:", e);
-        await Vue.$toast.open({
+        console.error("[UpdateProject].handleSaveProject error:", e);
+        Vue.$toast.open({
           message: `${this.$t(e)}`,
           type: "error",
           position: "top-right",
@@ -82,20 +85,21 @@ export default {
     async handleSaveProject() {
       this.excelUploading = true;
       try {
-        const { data } = await ProjectsAPI.attachSourceFile({
+        const data = await this.$store.dispatch("project/ATTACH_PROJECT_FILE", {
           projectId: this.projectId,
           file: this.file
         });
-        console.log("[NewProject].handleSaveProject data:", data);
+
+        console.log("[UpdateProject].handleSaveProject data:", data);
         if (data) {
           this.$router.push({
             name: "project-page",
-            params: { id: this.projectId }
+            params: { projectId: this.projectId }
           });
         }
       } catch (e) {
         console.error("[NewProject].handleSaveProject error:", e);
-        await Vue.$toast.open({
+        Vue.$toast.open({
           message: `${this.$t(e)}`,
           type: "error",
           position: "top-right",

@@ -23,8 +23,13 @@
 
 <script>
 import Navigation from "@/components/navigation/Navigation";
+import { disconnect } from "@/websocket/ws";
+
 export default {
   components: { Navigation },
-  data: () => ({ drawer: null })
+  data: () => ({ drawer: null }),
+  destroyed() {
+    disconnect();
+  }
 };
 </script>

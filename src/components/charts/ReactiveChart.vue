@@ -1,44 +1,49 @@
 <template>
-  <div :id="uuid"></div>
+  <div style="width: 100%;" :id="uuid"></div>
 </template>
 
 <script>
 import Plotly from "plotly.js-dist";
+import { uuidv4 } from "@/services/utils/generate.utils";
 
 export default {
   name: "ReactiveChart",
-  props: { data: Array, layout: Object, uuid: String },
+  props: { data: Array, layout: Object },
   data: function() {
     return {
+      uuid: uuidv4(),
+      config: { responsive: true },
       baseLayout: {
-        plot_bgcolor: "#303030",
-        paper_bgcolor: "#303030",
-        font: {
-          color: "#FFF"
-        }
+        // plot_bgcolor: "#303030",
+        // paper_bgcolor: "#303030",
+        // font: {
+        //   color: "#FFF"
+        // }
       }
     };
   },
+  methods: {
+    createPlot(data, layout) {
+      Plotly.newPlot(
+        this.uuid,
+        data ? data : [],
+        {
+          ...this.baseLayout,
+          ...layout
+        },
+        this.config
+      );
+    }
+  },
   mounted() {
-    Plotly.newPlot(this.uuid, this.data ? this.data : [], {
-      ...this.baseLayout,
-      ...this.layout
-    });
+    this.createPlot(this.data, this.layout);
   },
   watch: {
     data: function(newValue) {
-      if (newValue) {
-        Plotly.newPlot(this.uuid, newValue, {
-          ...this.baseLayout,
-          ...this.layout
-        });
-      }
+      this.createPlot(newValue, this.layout);
     },
     layout: function(newValue) {
-      Plotly.newPlot(this.uuid, newValue, {
-        ...this.baseLayout,
-        ...this.layout
-      });
+      this.createPlot(this.data, newValue || {});
     }
   }
 };

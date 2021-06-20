@@ -19,6 +19,7 @@ const user = JSON.parse(localStorage.getItem("user"));
 if (user) {
   const AUTH_TOKEN = user.tokens.accessToken;
   axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+  // connect(AUTH_TOKEN);
 }
 
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';

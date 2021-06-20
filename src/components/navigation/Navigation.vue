@@ -72,7 +72,7 @@ export default {
       let isAdmin = false;
 
       if (isLoggedIn) {
-        isAdmin = this.user.roles.includes("ROLE_ADMIN");
+        isAdmin = this.user?.roles?.includes("ROLE_ADMIN");
       }
 
       const renderableItems = [];
